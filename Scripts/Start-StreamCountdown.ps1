@@ -45,8 +45,6 @@ Process {
             }
         }
         While ($DestinationTime -gt $Now) {
-            #Magic mod for seconds conversion to minutes
-            #which will output to file.
             $Now = Get-Date
             $RemainingTime = (New-TimeSpan -Start $Now -End $DestinationTime).ToString().Split('.')[0]
             $RemainingTime | Out-File -FilePath $CountdownFilePath -Force

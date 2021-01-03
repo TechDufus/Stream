@@ -48,7 +48,7 @@ Process {
             $Now = Get-Date
             $RemainingTime = (New-TimeSpan -Start $Now -End $DestinationTime).ToString().Split('.')[0]
             $RemainingTime | Out-File -FilePath $CountdownFilePath -Force
-            Start-Sleep -Seconds 1
+            Start-Sleep -Milliseconds 990
         }
     } Catch {
         Write-Error $_

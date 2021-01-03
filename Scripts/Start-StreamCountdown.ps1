@@ -44,12 +44,21 @@ Process {
                 $DestinationTime = $Now.AddMinutes($MinutesUntilStart)
             }
         }
+        Write-Progress -Activity 'Stream Countdown Progress'
         While ($DestinationTime -gt $Now) {
             $Now = Get-Date
             $RemainingTime = (New-TimeSpan -Start $Now -End $DestinationTime).ToString().Split('.')[0]
+
+            $writeProgressSplat = @{
+                Activity         = 'Stream Countdown Progress'
+                SecondsRemaining = $($DestinationTime - $Now).TotalSeconds
+                CurrentOperation = 'Countdown'
+            }
+            Write-Progress @writeProgressSplat
             $RemainingTime | Out-File -FilePath $CountdownFilePath -Force
             Start-Sleep -Milliseconds 990
         }
+        Write-Progress -Activity 'Stream Countdown Progress' -Completed
     } Catch {
         Write-Error $_
     } Finally {

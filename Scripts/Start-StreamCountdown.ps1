@@ -56,7 +56,7 @@ Process {
             }
             Write-Progress @writeProgressSplat
             $RemainingTime | Out-File -FilePath $CountdownFilePath -Force
-            Start-Sleep -Milliseconds 990
+            Start-Sleep -Milliseconds 100
         }
         Write-Progress -Activity 'Stream Countdown Progress' -Completed
     } Catch {

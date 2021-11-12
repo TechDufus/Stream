@@ -23,7 +23,11 @@ Param(
     [System.DateTime] $StartTime,
 
     [Parameter(Mandatory, ParameterSetName = 'Ad-Hoc')]
-    [System.String] $MinutesUntilStart
+    [System.String] $MinutesUntilStart,
+
+    [System.String] $CompletionText,
+
+    [int] $CompletionTextDuration = 5
 )
 
 Begin {
@@ -38,10 +42,10 @@ Process {
         $Now = Get-Date
         Switch ($PSCmdlet.ParameterSetName) {
             'Time' {
-                $DestinationTime = $StartTime
+                $DestinationTime = Get-Date $StartTime
             }
             'Ad-Hoc' {
-                $DestinationTime = $Now.AddMinutes($MinutesUntilStart)
+                $DestinationTime = Get-Date $Now.AddMinutes($MinutesUntilStart)
             }
         }
         Write-Progress -Activity 'Stream Countdown Progress'
@@ -55,8 +59,14 @@ Process {
                 CurrentOperation = 'Countdown'
             }
             Write-Progress @writeProgressSplat
+            if ($RemainingTime[0] -eq '-') {break}
             $RemainingTime | Out-File -FilePath $CountdownFilePath -Force
             Start-Sleep -Milliseconds 100
+        }
+
+        If ($CompletionText) {
+            $CompletionText | Out-File -FilePath $CountdownFilePath -Force
+            Start-Sleep -Seconds $CompletionTextDuration
         }
         Write-Progress -Activity 'Stream Countdown Progress' -Completed
     } Catch {
